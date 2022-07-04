@@ -1,0 +1,54 @@
+{
+  "name": "binance-icons-toolkit-cli",
+  "version": "0.0.1",
+  "description": "Binance Icons Toolkit (BIT)",
+  "author": {
+    "name": "Vadim Malykhin",
+    "email": "dev@61re.com",
+    "url": "https://github.com/VadimMalykhin"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/VadimMalykhin/binance-icons-toolkit-cli.git"
+  },
+  "keywords": [
+    "binance",
+    "svg",
+    "icons",
+    "bitcoin",
+    "bnb",
+    "toolkit",
+    "cli"
+  ],
+  "license": "GPLv3",
+  "type": "module",
+  "main": "dist/cli.min.cjs",
+  "bin": {
+    "bit-cli": "bin/cli.cjs"
+  },
+  "scripts": {
+    "clean": "zx ./scripts/clean.mjs",
+    "build": "zx ./scripts/build.mjs",
+    "install-build": "zx ./scripts/install.mjs",
+    "debug:start": "npm run build && zx ./bin/cli.cjs"
+  },
+  "engines": {
+    "npm": ">=7.0.0",
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "@types/eslint": "^8.4.5",
+    "@types/node": "^18.0.1",
+    "@types/prompts": "^2.0.14",
+    "@types/svgo": "^2.6.3",
+    "@types/write-file-atomic": "^4.0.0",
+    "esbuild": "^0.14.48",
+    "eslint": "^8.19.0",
+    "kolorist": "^1.5.1",
+    "prettier": "^2.7.1",
+    "prompts": "^2.4.2",
+    "typescript": "^4.7.4",
+    "write-file-atomic": "^4.0.1",
+    "zx": "^7.0.7"
+  }
+}
