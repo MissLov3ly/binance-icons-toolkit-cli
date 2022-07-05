@@ -1,6 +1,6 @@
+import { stdout } from 'node:process'
 import { join } from 'node:path'
-import { chalk, echo, fs } from 'zx'
-import { red, green, yellow, bold } from 'kolorist'
+import { red } from 'kolorist'
 import { Config } from '@/config'
 import { appDir, banner, Icons } from '@/utils'
 import { setupCommand, startCommand } from '@/commands'
@@ -10,7 +10,7 @@ import { setupCommand, startCommand } from '@/commands'
  */
 export class Cli {
   constructor() {
-    echo(banner)
+    stdout.write(banner)
   }
 
   /**
@@ -23,7 +23,7 @@ export class Cli {
     try {
       await config.load()
     } catch (e) {
-      echo`${red(Icons.cross)} Failed to read config file.\n`
+      stdout.write(`${red(Icons.cross)} Failed to read config file.\n`)
       await config.unlink()
     }
 
@@ -34,7 +34,7 @@ export class Cli {
     }
 
     if (config.get<boolean>('unsafe', false)) {
-      echo`${red('\n! USE THE API KEY WITH READ-ONLY PERMISSIONS!\n')}`
+      stdout.write(`${red('\n! USE THE API KEY WITH READ-ONLY PERMISSIONS!\n')}`)
     }
 
     await startCommand(config)

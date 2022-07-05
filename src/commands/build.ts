@@ -1,11 +1,14 @@
+import { stdout, stderr, exit } from 'node:process'
 import { resolve, parse } from 'node:path'
-import { echo, fs, sleep } from 'zx'
+import { promises as fs } from 'node:fs'
+import { ensureDir, writeJson } from 'fs-extra'
 import { spinner } from 'zx/experimental'
 import { green, yellow } from 'kolorist'
 import prompts from 'prompts'
 import writeFileAtomic from 'write-file-atomic'
-import { appDir, branchDir, generatedDir, releaseDir, Icons, optimizeSVG, generateManifest, generateMarkdown, generateNPM } from '@/utils'
-import type { WriteOptions, CopyOptions } from 'fs-extra'
+import { appDir, branchDir, generatedDir, Icons, optimizeSVG, generateManifest, generateMarkdown, generateNPM } from '@/utils'
+
+import type { WriteOptions } from 'fs-extra'
 
 export async function buildCommand(config: Config): Future<void> {
   // icons
@@ -13,7 +16,7 @@ export async function buildCommand(config: Config): Future<void> {
     await spinner(yellow(`${Icons.spacer} Building icons...`), async () => {
       // Create folders for icons.
       for (const dir of ['crypto', 'etf', 'currency']) {
-        await fs.ensureDir(`${appDir}/generated/${dir}`)
+        await ensureDir(`${appDir}/generated/${dir}`)
       }
 
       // crypto
@@ -42,27 +45,27 @@ export async function buildCommand(config: Config): Future<void> {
         }
         await optimizeSVG(resolve(branchDir('dev'), 'sources', 'currency', file), resolve(generatedDir, 'currency', file))
       }
-      echo(green(`${Icons.mark} Build icons done.`))
+      stdout.write(green(`${Icons.mark} Build icons done.\n`))
     })
   }
 
   // manifest
   const buildManifest = async () => {
-    echo(yellow(`${Icons.spacer} Building manifest...`))
+    stdout.write(yellow(`${Icons.spacer} Building manifest...\n`))
     const manifest = await generateManifest()
     const opts: WriteOptions = { spaces: 2, EOL: '\n' }
-    await fs.writeJson(`${appDir}/generated/manifest.json`, manifest)
-    await fs.writeJson(`${appDir}/generated/manifest.readable.json`, manifest, opts)
-    echo(green(`${Icons.mark} Build manifest done.`))
+    await writeJson(`${appDir}/generated/manifest.json`, manifest)
+    await writeJson(`${appDir}/generated/manifest.readable.json`, manifest, opts)
+    stdout.write(green(`${Icons.mark} Build manifest done.\n`))
   }
 
   // markdown
   const buildMarkdown = async () => {
-    echo(yellow(`${Icons.spacer} Building markdown...`))
+    stdout.write(yellow(`${Icons.spacer} Building markdown...\n`))
 
     const readmeTemplate = await fs.readFile(resolve(branchDir('dev'), 'sources', 'README.template.md'))
     await writeFileAtomic(resolve(generatedDir, 'README.md'), readmeTemplate, { encoding: 'utf8', mode: 0o0600 })
-    echo(`${green(Icons.mark)} ${green('Updating `README.md` done')}`)
+    stdout.write(`${green(Icons.mark)} ${green('Updating `README.md` done')}\n`)
 
     const previewTemplate = await fs.readFile(resolve(branchDir('dev'), 'sources', 'PREVIEW.template.md'))
     const { cryptoCount, cryptoTable, etfCount, etfTable, currencyCount, currencyTable } = await generateMarkdown()
@@ -75,20 +78,20 @@ export async function buildCommand(config: Config): Future<void> {
       .replace('{{ previewCurrencyCount }}', currencyCount)
       .replace('{{ previewCurrencyTable }}', currencyTable)
     await writeFileAtomic(resolve(generatedDir, 'PREVIEW.md'), preview, { encoding: 'utf8', mode: 0o0600 })
-    echo(`${green(Icons.mark)} ${green('Updating `PREVIEW.md` done')}`)
+    stdout.write(`${green(Icons.mark)} ${green('Updating `PREVIEW.md` done')}\n`)
 
-    echo(green(`${Icons.mark} Build markdown done.`))
+    stdout.write(green(`${Icons.mark} Build markdown done.\n`))
   }
 
   // NPM
   const buildNPM = async () => {
-    echo(yellow(`${Icons.spacer} Building NPM...`))
+    stdout.write(yellow(`${Icons.spacer} Building NPM...\n`))
 
     try {
       await generateNPM()
-      echo(green(`${Icons.mark} Build NPM done.`))
+      stdout.write(green(`${Icons.mark} Build NPM done.\n`))
     } catch (e) {
-      echo(green(`${Icons.mark} Build NPM fail.`))
+      stdout.write(green(`${Icons.mark} Build NPM fail.\n`))
       throw e
     }
   }
@@ -135,14 +138,14 @@ export async function buildCommand(config: Config): Future<void> {
         break
       }
       default: {
-        process.exit(1)
+        exit(1)
         break
       }
     }
     // echo`\r`
     // await startCommand(config)
   } catch (err) {
-    echo((err as Error).message)
-    process.exit(1)
+    stderr.write(`${(err as Error).message}\n`)
+    exit(1)
   }
 }

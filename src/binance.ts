@@ -1,4 +1,4 @@
-import { fetch } from 'zx'
+import fetch, { Headers, Response } from 'node-fetch'
 import { createHmac } from 'node:crypto'
 import { joinQueryString } from '@/utils'
 

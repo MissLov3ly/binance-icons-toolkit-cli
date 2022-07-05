@@ -1,5 +1,4 @@
-import process from 'node:process'
-import { echo } from 'zx'
+import { stdout, exit } from 'node:process'
 import prompts from 'prompts'
 import { helpCommand, cloneCommand, fetchCommand, todoCommand, buildCommand, releaseCommand } from '@/commands'
 
@@ -49,14 +48,14 @@ export async function startCommand(config: Config): Future<void> {
         break
       }
       default: {
-        process.exit(1)
+        exit(1)
         break
       }
     }
-    echo`\r`
+    stdout.write('\r')
     await startCommand(config)
   } catch (err) {
-    echo((err as Error).message)
-    process.exit(1)
+    stdout.write(`${(err as Error).message}\n`)
+    exit(1)
   }
 }

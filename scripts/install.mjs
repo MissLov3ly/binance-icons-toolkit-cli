@@ -1,9 +1,12 @@
-import { $, fs, glob } from 'zx'
+#!/usr/bin/env node
+
+import { $, fs, glob, sleep } from 'zx'
 
 void (async () => {
   await removePackages()
   const packageName = await makePackage()
   await installPackage(packageName)
+  await sleep(2000)
   await removePackages()
 })()
 
@@ -16,12 +19,13 @@ async function removePackages() {
 
 async function makePackage() {
   const packOutput = await $`npm pack .`
-  if (packOutput.exitCode !== 0) {
-    return
+  if (packOutput.exitCode === 0) {
+    return packOutput.stdout.trim()
   }
-  return packOutput.stdout.trim()
 }
 
 async function installPackage(packageName) {
-  await $`npm i -g ./${packageName}`
+  if (packageName !== undefined) {
+    await $`npm i -g ./${packageName}`
+  }
 }

@@ -2,25 +2,27 @@
  * Utility functions
  */
 
+import { stdout, stderr, exit } from 'node:process'
+import { homedir, platform } from 'node:os'
 import { join, resolve, parse } from 'node:path'
-import { echo, log, fs, os } from 'zx'
+import { promises as fs } from 'node:fs'
 import { yellow, bold } from 'kolorist'
-import { ensureDir, readJson } from 'fs-extra'
 import { optimize, OptimizedSvg, XastElement } from 'svgo'
+import { ensureDir, readJson } from 'fs-extra'
 import writeFileAtomic from 'write-file-atomic'
 
-export const isWindows = os.platform() === 'win32'
+export const isWindows = platform() === 'win32'
 
 /**
  * Application Directory
  */
-export const appDir: string = join(os.homedir(), '.binance-icons-toolkit')
+export const appDir: string = join(homedir(), '.binance-icons-toolkit')
 
-export const generatedDir: string = join(os.homedir(), '.binance-icons-toolkit', 'generated')
+export const generatedDir: string = join(homedir(), '.binance-icons-toolkit', 'generated')
 
-export const releaseDir: string = join(os.homedir(), '.binance-icons-toolkit', 'release')
+export const releaseDir: string = join(homedir(), '.binance-icons-toolkit', 'release')
 
-export const branchDir = (branch: string): string => join(os.homedir(), '.binance-icons-toolkit', 'git', branch)
+export const branchDir = (branch: string): string => join(homedir(), '.binance-icons-toolkit', 'git', branch)
 
 /**
  * Icons
@@ -38,7 +40,7 @@ export class Icons {
   static readonly questionRed = '\u2753'
 }
 
-export const banner = bold(yellow('\u25c6 Binance Icons Toolkit \u25c6\n'))
+export const banner = bold(yellow('\u25c6 Binance Icons Toolkit \u25c6\n\n'))
 
 /**
  * Get directory only
@@ -47,9 +49,8 @@ export const getPathDir = (dirname: string): string => parse(dirname).dir
 
 /**
  * Sleep
- * @deprecated use zx sleep
  */
-// export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
+export const sleep = (ms: number) => new Promise(r => setTimeout(r, ms))
 
 /**
  * Check if it is a folder
@@ -437,10 +438,10 @@ export const optimizeSVG = async (source: string, dest: string, prefix?: string)
       await writeFileAtomic(dest, svgData, { encoding: 'utf8', mode: 0o0600 })
     }
   } catch (err) {
-    echo`[optimizeSVG] ${source} -> ${dest} | ${(err as Error).message}`
+    stdout.write(`[optimizeSVG] ${source} -> ${dest} | ${(err as Error).message}\n`)
     // console.error(err)
-    log({ kind: 'stderr', verbose: false, data: Buffer.from(err as Error) })
-    process.exit(1)
+    stderr.write({ kind: 'stderr', verbose: false, data: Buffer.from(err as Error) })
+    exit(1)
   }
 }
 

@@ -1,10 +1,13 @@
-import * as esbuild from 'esbuild'
+#!/usr/bin/env node
+
+import { exit } from 'node:process'
+import { build } from 'esbuild'
 import { fs } from 'zx'
 
 try {
   await fs.emptyDir('./dist')
 
-  await esbuild.build({
+  await build({
     entryPoints: ['./src/index.ts'],
     outfile: './dist/cli.cjs',
     platform: 'node',
@@ -19,7 +22,7 @@ try {
     }
   })
 
-  await esbuild.build({
+  await build({
     entryPoints: ['./src/index.ts'],
     outfile: './dist/cli.min.cjs',
     platform: 'node',
@@ -36,5 +39,5 @@ try {
 
   await fs.copyFile('./dist/cli.min.cjs', './bin/cli.cjs')
 } catch (e) {
-  process.exit(1)
+  exit(1)
 }

@@ -1,4 +1,4 @@
-import { fs } from 'zx'
+import { ensureDir, readJson, writeJson, remove } from 'fs-extra'
 import { getPathDir } from '@/utils'
 
 export class Config implements Config {
@@ -16,7 +16,7 @@ export class Config implements Config {
 
   public async load(): Promise<void> {
     try {
-      const obj = (await fs.readJson(this.#path)) as object
+      const obj = (await readJson(this.#path)) as object
       this.#data = new Map<string, unknown>(Object.entries(obj))
     } catch (error) {
       const errorCode = (error as NodeJS.ErrnoException)?.code
@@ -28,12 +28,12 @@ export class Config implements Config {
   }
 
   public async unlink(): Promise<void> {
-    await fs.remove(this.#path)
+    await remove(this.#path)
   }
 
   private async write(config: Map<string, unknown>): Promise<void> {
-    await fs.ensureDir(getPathDir(this.#path))
-    await fs.writeJson(this.#path, Object.fromEntries(config.entries()))
+    await ensureDir(getPathDir(this.#path))
+    await writeJson(this.#path, Object.fromEntries(config.entries()))
     this.#data = config
   }
 

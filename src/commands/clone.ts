@@ -1,8 +1,9 @@
-import { argv, echo, fs, sleep } from 'zx'
+import { argv, stdout, exit } from 'node:process'
 import { spinner } from 'zx/experimental'
-import { dim, red, green, yellow, cyan } from 'kolorist'
+import { rm } from 'fs-extra'
+import minimist from 'minimist'
+import { red, green, cyan } from 'kolorist'
 import prompts from 'prompts'
-import { Binance } from '@/binance'
 import { Git } from '@/git'
 import { startCommand } from '@/commands'
 import { branchDir, exists, Icons } from '@/utils'
@@ -12,24 +13,24 @@ declare type CloneArgs = {
 }
 
 export async function cloneCommand(config: Config): Future<void> {
-  const args = argv as CloneArgs
+  const args: CloneArgs = minimist(argv.slice(1))
 
   const git = new Git('https://github.com/VadimMalykhin/binance-icons.git', { verbose: args.verbose })
 
   if (!(await git.isInstalled())) {
-    echo(red(`${Icons.cross} git is not installed.`))
+    stdout.write(red(`${Icons.cross} git is not installed.\n`))
     return
   }
 
   const _clone = async (branchDirectory: string, branch: string, overwrite = false): Promise<void> => {
-    echo`${green(Icons.mark)} Selected branch: ${cyan(branch)}`
+    stdout.write(`${green(Icons.mark)} Selected branch: ${cyan(branch)}\n`)
 
     if ((await exists(branchDirectory)) && !overwrite) {
       const answer = await prompts([
         {
           type: 'confirm',
           name: 'value',
-          message: `Remove the previously cloned ${cyan(branch)} repository directory?`
+          message: `Remove the previously cloned '${cyan(branch)}' branch directory?`
         },
         {
           onCancel() {
@@ -40,22 +41,22 @@ export async function cloneCommand(config: Config): Future<void> {
       if (!answer.value) {
         return
       }
-      await fs.rm(branchDirectory, { force: true, recursive: true })
-      echo(`${green(Icons.mark)} The ${red(branch)} directory was successfully removed.`)
+      await rm(branchDirectory, { force: true, recursive: true })
+      stdout.write(`${green(Icons.mark)} The '${red(branch)}' directory was successfully removed.\n`)
     }
 
     if (overwrite && (await exists(branchDirectory))) {
-      await fs.rm(branchDirectory, { force: true, recursive: true })
-      echo(`${green(Icons.mark)} The ${red(branch)} directory was successfully removed.`)
+      await rm(branchDirectory, { force: true, recursive: true })
+      stdout.write(`${green(Icons.mark)} The '${red(branch)}' directory was successfully removed.\n`)
     }
 
-    await spinner(`Cloning '${branch}'... `, async () => {
+    await spinner(`Cloning '${branch}' branch... `, async () => {
       const result = await git.clone(branchDirectory, branch, { depth: '1' })
       if (result) {
         // echo`${result.code}`
       }
 
-      echo(`${green(Icons.mark)} The ${cyan(branch)} branch was successfully cloned.`)
+      stdout.write(`${green(Icons.mark)} The '${cyan(branch)}' branch was successfully cloned.\n`)
     })
   }
 
@@ -89,14 +90,14 @@ export async function cloneCommand(config: Config): Future<void> {
         break
       }
       default: {
-        process.exit(1)
+        exit(1)
         break
       }
     }
-    echo`\r`
+    stdout.write('\r')
     await startCommand(config)
   } catch (err) {
-    echo((err as Error).message)
-    process.exit(1)
+    stdout.write(`${(err as Error).message}\n`)
+    exit(1)
   }
 }

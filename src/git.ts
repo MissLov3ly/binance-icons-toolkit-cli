@@ -1,6 +1,6 @@
+import { stderr } from 'node:process'
 import { exec } from 'node:child_process'
 import { promisify } from 'node:util'
-import { echo } from 'zx'
 import type { ChildProcess } from 'node:child_process'
 
 const execAsync = promisify(exec)
@@ -28,7 +28,7 @@ export class Git {
         controller.abort()
       } catch (err) {
         if (this.#verbose) {
-          echo('git: ', err)
+          stderr.write(`git: ${(err as Error).message}`)
         }
         return false
       }

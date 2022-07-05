@@ -1,6 +1,7 @@
-import { echo, fs } from 'zx'
+import { stdout, stderr, exit } from 'node:process'
+import { ensureDir, writeJson } from 'fs-extra'
 import { spinner } from 'zx/experimental'
-import { dim, red, green, yellow, cyan } from 'kolorist'
+import { red, green, cyan } from 'kolorist'
 import prompts from 'prompts'
 import { Binance } from '@/binance'
 import { appDir, Icons, extractAssetsCrypto, extractAssetsCryptoEtf, extractAssetsCurrency, extractAssetsNames } from '@/utils'
@@ -27,37 +28,37 @@ export async function fetchCommand(config: Config): Future<void> {
 
     // Create folders for icons.
     for (const dir of ['crypto', 'etf', 'currency']) {
-      await fs.ensureDir(`${appDir}/generated/${dir}`)
+      await ensureDir(`${appDir}/generated/${dir}`)
     }
 
-    echo(cyan(`${Icons.identical} Extracted Assets `))
+    stdout.write(cyan(`${Icons.identical} Extracted Assets \n`))
 
     // Json formatter.
     const opts: WriteOptions = { spaces: 2, EOL: '\n' }
 
     // Write all assets.
-    await fs.writeJson(`${appDir}/generated/all.json`, data, opts)
+    await writeJson(`${appDir}/generated/all.json`, data, opts)
 
     // Extract the crypto assets.
     const crypto = extractAssetsCrypto(data)
-    await fs.writeJson(`${appDir}/generated/crypto.json`, crypto, opts)
-    echo`${green(Icons.mark)} Crypto: ${cyan(crypto.length)}`
+    await writeJson(`${appDir}/generated/crypto.json`, crypto, opts)
+    stdout.write(`${green(Icons.mark)} Crypto: ${cyan(crypto.length)}\n`)
 
     // Extract the crypto ETF assets.
     const cryptoEtf = extractAssetsCryptoEtf(data)
-    await fs.writeJson(`${appDir}/generated/etf.json`, cryptoEtf, opts)
-    echo`${green(Icons.mark)} Crypto ETF: ${cyan(cryptoEtf.length)}`
+    await writeJson(`${appDir}/generated/etf.json`, cryptoEtf, opts)
+    stdout.write(`${green(Icons.mark)} Crypto ETF: ${cyan(cryptoEtf.length)}\n`)
 
     // Extract the currency assets.
     const currency = extractAssetsCurrency(data)
-    await fs.writeJson(`${appDir}/generated/currency.json`, currency, opts)
-    echo`${green(Icons.mark)} Currency: ${cyan(currency.length)}`
+    await writeJson(`${appDir}/generated/currency.json`, currency, opts)
+    stdout.write(`${green(Icons.mark)} Currency: ${cyan(currency.length)}\n`)
 
     // Extract the assets names.
     const names = extractAssetsNames(data)
-    await fs.writeJson(`${appDir}/generated/cryptoNames.json`, names, opts)
+    await writeJson(`${appDir}/generated/cryptoNames.json`, names, opts)
   } catch (err) {
-    echo((err as Error).message)
-    process.exit(1)
+    stderr.write(`${(err as Error).message}\n`)
+    exit(1)
   }
 }

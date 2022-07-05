@@ -1,4 +1,4 @@
-import { echo, sleep } from 'zx'
+import { stdout, exit } from 'node:process'
 import { spinner } from 'zx/experimental'
 import { dim, red, green, yellow } from 'kolorist'
 import prompts from 'prompts'
@@ -16,7 +16,7 @@ type SetupSaveAnswer = {
 
 export async function setupCommand(config: Config): Future<void> {
   try {
-    echo(
+    stdout.write(
       yellow('Please enter the API key & secret with read-only access permissions\n') + dim('This is necessary to get all wallet assets, even delisted ones\n')
     )
 
@@ -50,15 +50,15 @@ export async function setupCommand(config: Config): Future<void> {
     await spinner('Checking Restrictions', async () => {
       restrictions = await api.fetchRestrictions()
 
-      echo`${yellow('?')} Restrictions Checklist`
-      echo`Reading:                    ${restrictions.enableReading ? green(Icons.mark) : red(Icons.cross)}`
-      echo`Spot and Margin Trading:    ${restrictions.enableSpotAndMarginTrading ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Margin:                     ${restrictions.enableMargin ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Futures:                    ${restrictions.enableFutures ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Vanilla Options:            ${restrictions.enableVanillaOptions ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Internal Transfer:          ${restrictions.enableInternalTransfer ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Permits Universal Transfer: ${restrictions.permitsUniversalTransfer ? red(Icons.cross) : green(Icons.mark)}`
-      echo`Withdrawals:                ${restrictions.enableWithdrawals ? red(Icons.cross) : green(Icons.mark)}`
+      stdout.write(`${yellow('?')} Restrictions Checklist\n`)
+      stdout.write(`Reading:                    ${restrictions.enableReading ? green(Icons.mark) : red(Icons.cross)}\n`)
+      stdout.write(`Spot and Margin Trading:    ${restrictions.enableSpotAndMarginTrading ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Margin:                     ${restrictions.enableMargin ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Futures:                    ${restrictions.enableFutures ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Vanilla Options:            ${restrictions.enableVanillaOptions ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Internal Transfer:          ${restrictions.enableInternalTransfer ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Permits Universal Transfer: ${restrictions.permitsUniversalTransfer ? red(Icons.cross) : green(Icons.mark)}\n`)
+      stdout.write(`Withdrawals:                ${restrictions.enableWithdrawals ? red(Icons.cross) : green(Icons.mark)}\n`)
     })
 
     const saveAnswer: SetupSaveAnswer = await prompts<SetupSaveAnswer>(
@@ -84,13 +84,13 @@ export async function setupCommand(config: Config): Future<void> {
         setup: true,
         unsafe: isUnsafeRestrictions(restrictions)
       })
-      echo(green(`\n${Icons.mark} The configuration file was successfully saved`))
+      stdout.write(green(`\n${Icons.mark} The configuration file was successfully saved`))
     } else {
-      echo`\r`
+      stdout.write('\r')
       await setupCommand(config)
     }
   } catch (err) {
-    echo((err as Error).message)
-    process.exit(1)
+    stdout.write(`${(err as Error).message}\n`)
+    exit(1)
   }
 }
