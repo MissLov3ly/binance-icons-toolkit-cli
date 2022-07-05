@@ -20,10 +20,10 @@ module.exports = {
     '@typescript-eslint/await-thenable': 'error',
     '@typescript-eslint/no-unsafe-call': 'error',
     'no-undef': 'off',
-    'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    'no-console': 'error',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'prettier/prettier': ['warn'],
     quotes: [2, 'single', { avoidEscape: true }]
   },
-  ignorePatterns: ['**/dist/*.js']
+  ignorePatterns: ['**/dist/**']
 }

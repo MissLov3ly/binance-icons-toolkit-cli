@@ -1,0 +1,26 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "baseUrl": "./",
+    "target": "es2022",
+    "lib": ["ES2015", "ESNext"],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "typeRoots": ["types", "./node_modules/@types"],
+    "module": "esnext",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "sourceMap": false,
+    "outDir": "./dist",
+    "removeComments": true,
+    "importHelpers": false,
+    "newLine": "lf",
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "strict": false,
+    "skipLibCheck": true
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "types/types.d.ts"]
+}
