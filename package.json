@@ -30,7 +30,8 @@
     "clean": "zx ./scripts/clean.mjs",
     "build": "zx ./scripts/build.mjs",
     "install-build": "zx ./scripts/install.mjs",
-    "debug:start": "npm run build && node --experimental-fetch --no-warnings ./dist/cli.cjs"
+    "debug:start": "npm run build && node --experimental-fetch --no-warnings ./dist/cli.cjs",
+    "prepack": "npm run build"
   },
   "engines": {
     "npm": ">=7.0.0",

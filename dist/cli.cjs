@@ -66323,7 +66323,7 @@ async function startCommand(config) {
           { title: "Fetch", description: "Fetch all assets directly from the Binance Exchange", value: "fetch" },
           { title: "Todo", description: "To Do icons", value: "todo" },
           { title: "Build", description: "Build icons", value: "build" },
-          { title: "Release", description: "", value: "release" }
+          { title: "Release", description: "Create release", value: "release" }
         ],
         initial: 0
       }
@@ -66504,8 +66504,7 @@ async function buildCommand(config) {
           { title: "Build Icons", description: "Build svg icons", value: "icons" },
           { title: "Build Manifest", description: "Build manifest file that contains the svg icons metadata", value: "manifest" },
           { title: "Build Markdown", description: "Build Markdown files", value: "markdown" },
-          { title: "Build NPM", description: "Build package for npm.org", value: "npm" },
-          { title: "Release", description: "Build release", value: "release" }
+          { title: "Build NPM", description: "Build package for npm.org", value: "npm" }
         ],
         initial: 0
       }
@@ -66519,19 +66518,19 @@ async function buildCommand(config) {
         break;
       }
       case "icons": {
-        await buildIcons(config);
+        await buildIcons();
         break;
       }
       case "manifest": {
-        await buildManifest(config);
+        await buildManifest();
         break;
       }
       case "markdown": {
-        await buildMarkdown(config);
+        await buildMarkdown();
         break;
       }
       case "npm": {
-        await buildNPM(config);
+        await buildNPM();
         break;
       }
       default: {
