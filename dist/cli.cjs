@@ -63380,6 +63380,10 @@ var Config = class {
 var import_node_process2 = require("node:process");
 async function helpCommand(config) {
   import_node_process2.stdout.write(`...
+
+Workspace Directory: ${appDir}
+
+...
 1. Clone https://github.com/VadimMalykhin/binance-icons #main and #dev branches
 2. Fetch Binance Exchange Wallet assets.
 3. ...
@@ -66497,7 +66501,7 @@ async function buildCommand(config) {
         }
         await optimizeSVG((0, import_node_path5.resolve)(branchDir("dev"), "sources", "currency", file), (0, import_node_path5.resolve)(generatedDir, "currency", file));
       }
-      import_node_process11.stdout.write(green(`${Icons.mark} Build icons done.
+      import_node_process11.stdout.write(green(`${Icons.mark} Build icons done.          
 `));
     });
   };

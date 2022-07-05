@@ -1,6 +1,6 @@
 {
-  "name": "binance-icons-toolkit-cli",
-  "version": "0.0.1",
+  "name": "@binance-icons/bit-cli",
+  "version": "0.0.2",
   "description": "Binance Icons Toolkit (BIT)",
   "author": {
     "name": "Vadim Malykhin",

@@ -45,7 +45,7 @@ export async function buildCommand(config: Config): Future<void> {
         }
         await optimizeSVG(resolve(branchDir('dev'), 'sources', 'currency', file), resolve(generatedDir, 'currency', file))
       }
-      stdout.write(green(`${Icons.mark} Build icons done.\n`))
+      stdout.write(green(`${Icons.mark} Build icons done.          \n`))
     })
   }
 

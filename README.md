@@ -6,7 +6,7 @@ Interactive CLI Toolkit for the [Binance Icons](https://github.com/VadimMalykhin
 ## Installation
 
 ```sh
-npm add -g VadimMalykhin/binance-icons-toolkit-cli#main
+npm add -g @binance-icons/bit-cli
 ```
 
 ## Usage
