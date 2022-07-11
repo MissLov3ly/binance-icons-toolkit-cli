@@ -1,8 +1,10 @@
 import { stdout } from 'node:process'
 import { resolve } from 'node:path'
+
 import { readJson } from 'fs-extra'
 import { spinner } from 'zx/experimental'
 import { green, red, yellow } from 'kolorist'
+
 import { appDir, branchDir, Icons, isFile, sleep } from '@/utils'
 
 export async function todoCommand(config: Config): Future<void> {

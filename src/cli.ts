@@ -1,6 +1,8 @@
 import { stdout } from 'node:process'
 import { join } from 'node:path'
+
 import { red } from 'kolorist'
+
 import { Config } from '@/config'
 import { appDir, banner, Icons } from '@/utils'
 import { setupCommand, startCommand } from '@/commands'

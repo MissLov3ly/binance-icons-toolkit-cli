@@ -5,8 +5,15 @@ Interactive CLI Toolkit for the [Binance Icons](https://github.com/VadimMalykhin
 
 ## Installation
 
+NPM
+
 ```sh
 npm add -g @binance-icons/bit-cli
+```
+Standalone file
+
+```
+https://www.unpkg.com/browse/@binance-icons/bit-cli@latest/bin/cli.cjs
 ```
 
 ## Usage

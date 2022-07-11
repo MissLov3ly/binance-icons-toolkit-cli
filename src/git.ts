@@ -1,7 +1,6 @@
 import { stderr } from 'node:process'
-import { exec } from 'node:child_process'
+import { exec, ChildProcess } from 'node:child_process'
 import { promisify } from 'node:util'
-import type { ChildProcess } from 'node:child_process'
 
 const execAsync = promisify(exec)
 

@@ -1,11 +1,12 @@
 import { stdout, stderr, exit } from 'node:process'
-import { ensureDir, writeJson } from 'fs-extra'
+
+import { ensureDir, writeJson, WriteOptions } from 'fs-extra'
 import { spinner } from 'zx/experimental'
 import { red, green, cyan } from 'kolorist'
 import prompts from 'prompts'
 import { Binance } from '@/binance'
+
 import { appDir, Icons, extractAssetsCrypto, extractAssetsCryptoEtf, extractAssetsCurrency, extractAssetsNames } from '@/utils'
-import type { WriteOptions } from 'fs-extra'
 
 export async function fetchCommand(config: Config): Future<void> {
   const key = config.get('key') as string

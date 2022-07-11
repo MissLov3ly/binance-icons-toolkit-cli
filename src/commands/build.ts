@@ -1,14 +1,17 @@
 import { stdout, stderr, exit } from 'node:process'
 import { resolve, parse } from 'node:path'
 import { promises as fs } from 'node:fs'
+
 import { ensureDir, writeJson } from 'fs-extra'
 import { spinner } from 'zx/experimental'
 import { green, yellow } from 'kolorist'
 import prompts from 'prompts'
 import writeFileAtomic from 'write-file-atomic'
+
 import { appDir, branchDir, generatedDir, Icons, optimizeSVG, generateManifest, generateMarkdown, generateNPM } from '@/utils'
 
 import type { WriteOptions } from 'fs-extra'
+import { startCommand } from '@/commands'
 
 export async function buildCommand(config: Config): Future<void> {
   // icons
@@ -103,6 +106,7 @@ export async function buildCommand(config: Config): Future<void> {
         name: 'value',
         message: 'Select a Command',
         choices: [
+          { title: 'Back', value: 'back' },
           { title: 'Build All', description: 'Build all below', value: 'all' },
           { title: 'Build Icons', description: 'Build svg icons', value: 'icons' },
           { title: 'Build Manifest', description: 'Build manifest file that contains the svg icons metadata', value: 'manifest' },
@@ -114,6 +118,10 @@ export async function buildCommand(config: Config): Future<void> {
     ])
 
     switch (response.value) {
+      case 'back': {
+        await startCommand()
+        break
+      }
       case 'all': {
         await buildIcons()
         await buildManifest()

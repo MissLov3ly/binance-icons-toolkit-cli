@@ -1,4 +1,5 @@
 import { stdout } from 'node:process'
+
 import { appDir } from '@/utils'
 
 export async function helpCommand(config: Config): Future<void> {

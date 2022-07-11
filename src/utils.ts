@@ -6,6 +6,7 @@ import { stdout, stderr, exit } from 'node:process'
 import { homedir, platform } from 'node:os'
 import { join, resolve, parse } from 'node:path'
 import { promises as fs } from 'node:fs'
+
 import { yellow, bold } from 'kolorist'
 import { optimize, OptimizedSvg, XastElement } from 'svgo'
 import { ensureDir, readJson } from 'fs-extra'
@@ -365,6 +366,8 @@ export const generateNPM = async (): Promise<void> => {
   const manifest = (await readJson(resolve(releaseDir, 'manifest.json'))) as Repository.Manifest
 
   await ensureDir(resolve(appDir, 'npm'))
+
+  // todo npm
 }
 
 /**

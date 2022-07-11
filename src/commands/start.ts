@@ -1,5 +1,7 @@
 import { stdout, exit } from 'node:process'
+
 import prompts from 'prompts'
+
 import { helpCommand, cloneCommand, fetchCommand, todoCommand, buildCommand, releaseCommand } from '@/commands'
 
 export async function startCommand(config: Config): Future<void> {

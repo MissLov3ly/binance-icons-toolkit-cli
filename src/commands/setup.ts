@@ -1,7 +1,9 @@
 import { stdout, exit } from 'node:process'
+
 import { spinner } from 'zx/experimental'
 import { dim, red, green, yellow } from 'kolorist'
 import prompts from 'prompts'
+
 import { Binance } from '@/binance'
 import { Icons, isUnsafeRestrictions } from '@/utils'
 

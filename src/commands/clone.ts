@@ -1,9 +1,11 @@
 import { argv, stdout, exit } from 'node:process'
+
 import { spinner } from 'zx/experimental'
 import { rm } from 'fs-extra'
 import minimist from 'minimist'
 import { red, green, cyan } from 'kolorist'
 import prompts from 'prompts'
+
 import { Git } from '@/git'
 import { startCommand } from '@/commands'
 import { branchDir, exists, Icons } from '@/utils'
@@ -67,6 +69,7 @@ export async function cloneCommand(config: Config): Future<void> {
         name: 'value',
         message: 'Select a Command',
         choices: [
+          { title: 'Back', value: 'back' },
           { title: 'All', description: 'Clone all below', value: 'all' },
           { title: 'Main', description: "Clone 'main' branch", value: 'main' },
           { title: 'Dev', description: "Clone 'dev' branch", value: 'dev' }
@@ -76,6 +79,10 @@ export async function cloneCommand(config: Config): Future<void> {
     ])
 
     switch (response.value) {
+      case 'back': {
+        await startCommand()
+        break
+      }
       case 'all': {
         await _clone(branchDir('main'), 'main', true)
         await _clone(branchDir('dev'), 'dev', true)

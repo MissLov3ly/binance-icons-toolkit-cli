@@ -64292,7 +64292,7 @@ var ProcessPromise = class extends Promise {
     this.child.on("close", (code, signal) => {
       let message = `exit code: ${code}`;
       if (code != 0 || signal != null) {
-        message = `${stderr5 || "\n"}    at ${this._from}`;
+        message = `${stderr6 || "\n"}    at ${this._from}`;
         message += `
     exit code: ${code}${exitCodeInfo(code) ? " (" + exitCodeInfo(code) + ")" : ""}`;
         if (signal != null) {
@@ -64300,7 +64300,7 @@ var ProcessPromise = class extends Promise {
     signal: ${signal}`;
         }
       }
-      let output = new ProcessOutput(code, signal, stdout11, stderr5, combined, message);
+      let output = new ProcessOutput(code, signal, stdout11, stderr6, combined, message);
       if (code === 0 || this._nothrow) {
         this._resolve(output);
       } else {
@@ -64313,10 +64313,10 @@ var ProcessPromise = class extends Promise {
     errno: ${err.errno} (${errnoMessage(err.errno)})
     code: ${err.code}
     at ${this._from}`;
-      this._reject(new ProcessOutput(null, null, stdout11, stderr5, combined, message));
+      this._reject(new ProcessOutput(null, null, stdout11, stderr6, combined, message));
       this._resolved = true;
     });
-    let stdout11 = "", stderr5 = "", combined = "";
+    let stdout11 = "", stderr6 = "", combined = "";
     let onStdout = (data) => {
       $2.log({ kind: "stdout", data, verbose: $2.verbose && !this._quiet });
       stdout11 += data;
@@ -64324,7 +64324,7 @@ var ProcessPromise = class extends Promise {
     };
     let onStderr = (data) => {
       $2.log({ kind: "stderr", data, verbose: $2.verbose && !this._quiet });
-      stderr5 += data;
+      stderr6 += data;
       combined += data;
     };
     if (!this._piped)
@@ -64401,8 +64401,8 @@ var ProcessPromise = class extends Promise {
     } catch (e2) {
     }
   }
-  stdio(stdin, stdout11 = "pipe", stderr5 = "pipe") {
-    this._stdio = [stdin, stdout11, stderr5];
+  stdio(stdin, stdout11 = "pipe", stderr6 = "pipe") {
+    this._stdio = [stdin, stdout11, stderr6];
     return this;
   }
   nothrow() {
@@ -64420,12 +64420,12 @@ var ProcessPromise = class extends Promise {
   }
 };
 var ProcessOutput = class extends Error {
-  constructor(code, signal, stdout11, stderr5, combined, message) {
+  constructor(code, signal, stdout11, stderr6, combined, message) {
     super(message);
     this._code = code;
     this._signal = signal;
     this._stdout = stdout11;
-    this._stderr = stderr5;
+    this._stderr = stderr6;
     this._combined = combined;
   }
   toString() {
@@ -66022,8 +66022,8 @@ var Git = class {
     } catch (err) {
       if (this.#verbose) {
         const code = err.code;
-        const stderr5 = err.stderr;
-        return { code, messages: Git.parseStd(stderr5) };
+        const stderr6 = err.stderr;
+        return { code, messages: Git.parseStd(stderr6) };
       }
     }
     return { code: "1002" };
@@ -66110,6 +66110,7 @@ async function cloneCommand(config) {
         name: "value",
         message: "Select a Command",
         choices: [
+          { title: "Back", value: "back" },
           { title: "All", description: "Clone all below", value: "all" },
           { title: "Main", description: "Clone 'main' branch", value: "main" },
           { title: "Dev", description: "Clone 'dev' branch", value: "dev" }
@@ -66118,6 +66119,10 @@ async function cloneCommand(config) {
       }
     ]);
     switch (response.value) {
+      case "back": {
+        await startCommand();
+        break;
+      }
       case "all": {
         await _clone(branchDir("main"), "main", true);
         await _clone(branchDir("dev"), "dev", true);
@@ -66551,6 +66556,7 @@ async function buildCommand(config) {
         name: "value",
         message: "Select a Command",
         choices: [
+          { title: "Back", value: "back" },
           { title: "Build All", description: "Build all below", value: "all" },
           { title: "Build Icons", description: "Build svg icons", value: "icons" },
           { title: "Build Manifest", description: "Build manifest file that contains the svg icons metadata", value: "manifest" },
@@ -66561,6 +66567,10 @@ async function buildCommand(config) {
       }
     ]);
     switch (response.value) {
+      case "back": {
+        await startCommand();
+        break;
+      }
       case "all": {
         await buildIcons();
         await buildManifest();
@@ -66601,19 +66611,27 @@ var import_node_process12 = require("node:process");
 var import_node_path6 = require("node:path");
 var import_fs_extra7 = __toESM(require_lib(), 1);
 async function releaseCommand(config) {
-  await (0, import_fs_extra7.emptyDir)(releaseDir);
+  await spinner("Cleaning release directory", async () => {
+    await (0, import_fs_extra7.emptyDir)(releaseDir);
+  });
   await sleep(500);
-  const copyOptions = { overwrite: true };
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "crypto"), (0, import_node_path6.resolve)(releaseDir, "crypto"), copyOptions);
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "etf"), (0, import_node_path6.resolve)(releaseDir, "crypto"), copyOptions);
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "currency"), (0, import_node_path6.resolve)(releaseDir, "currency"), copyOptions);
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "manifest.json"), (0, import_node_path6.resolve)(releaseDir, "manifest.json")), copyOptions;
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "README.md"), (0, import_node_path6.resolve)(releaseDir, "README.md"), copyOptions);
-  await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "PREVIEW.md"), (0, import_node_path6.resolve)(releaseDir, "PREVIEW.md"), copyOptions);
-  import_node_process12.stdout.write(`${green(Icons.mark)} ${green("Release done")}
+  await spinner("Generating Release        ", async () => {
+    try {
+      const copyOptions = { overwrite: true };
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "crypto"), (0, import_node_path6.resolve)(releaseDir, "crypto"), copyOptions);
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "etf"), (0, import_node_path6.resolve)(releaseDir, "crypto"), copyOptions);
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "currency"), (0, import_node_path6.resolve)(releaseDir, "currency"), copyOptions);
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "manifest.json"), (0, import_node_path6.resolve)(releaseDir, "manifest.json")), copyOptions;
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "README.md"), (0, import_node_path6.resolve)(releaseDir, "README.md"), copyOptions);
+      await (0, import_fs_extra7.copy)((0, import_node_path6.resolve)(generatedDir, "PREVIEW.md"), (0, import_node_path6.resolve)(releaseDir, "PREVIEW.md"), copyOptions);
+      import_node_process12.stdout.write(`${green(Icons.mark)} ${green("Done")}                
 `);
-  import_node_process12.stdout.write(`  Can be found here: ${releaseDir}
+      import_node_process12.stdout.write(`  Release directory: ${green(releaseDir)}
 `);
+    } catch (e2) {
+      import_node_process12.stderr.write(e2.message);
+    }
+  });
 }
 
 // src/cli.ts

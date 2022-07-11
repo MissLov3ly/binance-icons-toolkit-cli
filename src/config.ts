@@ -1,4 +1,5 @@
 import { ensureDir, readJson, writeJson, remove } from 'fs-extra'
+
 import { getPathDir } from '@/utils'
 
 export class Config implements Config {

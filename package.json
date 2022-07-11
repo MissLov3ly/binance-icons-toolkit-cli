@@ -27,10 +27,14 @@
   "bin": {
     "bit-cli": "./bin/cli.cjs"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "scripts": {
     "clean": "zx ./scripts/clean.mjs",
     "build": "zx ./scripts/build.mjs",
-    "install-build": "zx ./scripts/install.mjs",
+    "debug:install": "zx ./scripts/install.mjs",
     "debug:start": "npm run build && node --experimental-fetch --no-warnings ./dist/cli.cjs"
   },
   "engines": {
